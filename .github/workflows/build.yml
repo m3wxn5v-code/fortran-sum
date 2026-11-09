@@ -1,0 +1,27 @@
+name: Compile and verify
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up gfortran
+        run: |
+          command -v gfortran || (sudo apt-get update && sudo apt-get install -y gfortran)
+          gfortran --version
+
+      - name: Compile
+        run: gfortran -Wall -o sum sum.f90
+
+      - name: Run with N = 10 and N = 100
+        run: |
+          echo 10  | ./sum
+          echo 100 | ./sum
+
+      - name: Three random verifications
+        run: bash test.sh
